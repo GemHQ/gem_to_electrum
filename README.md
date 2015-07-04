@@ -19,19 +19,19 @@ The addresses it outputs should match those in the paths file: (it doesn't right
 
 
 ### getting xpubkeys:
-import round
-import gemv2_api_token, gemv2_admintoken, gemv2_adminwalletname, gemv2_adminwalletpassphrase
-client = round.client()
-app = client.authenticate_application(api_token=gemv2_api_token, admin_token=gemv2_admintoken)
-my_wallet = app.wallets[gemv2_adminwalletname]
-my_wallet.unlock(passphrase=gemv2_adminwalletpassphrase)
-xpubkeybackup = my_wallet.multi_wallet.public_wifs()['backup']
-xpubkeycosigner = my_wallet.multi_wallet.public_wifs()['cosigner']
-xpubkeyprimary = my_wallet.multi_wallet.private_trees['primary'].hwif()
+    import round
+    import gemv2_api_token, gemv2_admintoken, gemv2_adminwalletname, gemv2_adminwalletpassphrase
+    client = round.client()
+    app = client.authenticate_application(api_token=gemv2_api_token, admin_token=gemv2_admintoken)
+    my_wallet = app.wallets[gemv2_adminwalletname]
+    my_wallet.unlock(passphrase=gemv2_adminwalletpassphrase)
+    xpubkeybackup = my_wallet.multi_wallet.public_wifs()['backup']
+    xpubkeycosigner = my_wallet.multi_wallet.public_wifs()['cosigner']
+    xpubkeyprimary = my_wallet.multi_wallet.private_trees['primary'].hwif()
 
 ### getting paths
-import round
-import gemv2_api_token, gemv2_admintoken, gemv2_adminwalletname
-client = round.client()
-app = client.authenticate_application(api_token=gemv2_api_token, admin_token=gemv2_admintoken)
-paths = app.wallets[gemv2_adminwalletname].dump_addresses('bitcoin')
+    import round
+    import gemv2_api_token, gemv2_admintoken, gemv2_adminwalletname
+    client = round.client()
+    app = client.authenticate_application(api_token=gemv2_api_token, admin_token=gemv2_admintoken)
+    paths = app.wallets[gemv2_adminwalletname].dump_addresses('bitcoin')
