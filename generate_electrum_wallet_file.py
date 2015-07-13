@@ -53,39 +53,41 @@ for path in paths:
     node = wallet.path(path['path'])
     path['private'] = node.private_keys
     path['public'] = node.public_keys
-    path['output_format'] = []
+    path['address'] = node.address(2, network='mainnet')
+    path['output_format'] = {
+        'm': 2,
+        'keypairs': []
+    }
     for n in sorted(path['public'].keys()):
         if n in path['private']:
-            path['output_format'].append(
-                FixedPyKey(
-                    secret_exponent=path['private'][n].key.privkey.secret_multiplier
-                ).sec_as_hex())
+            path['output_format']['keypairs'].append([
+                '',
+                FixedPyKey(secret_exponent=path['private'][n].key.privkey.secret_multiplier).as_text()
+            ])
         else:
-            path['output_format'].append(
+            path['output_format']['keypairs'].append([
                 FixedPyKey(public_pair=(path['public'][n].key.pubkey.point.x(),
                                         path['public'][n].key.pubkey.point.y())
-                ).sec_as_hex())
+                ).as_text(),
+                ''
+            ])
 
-# m/a/c/i
 output = {
     "accounts": {
-        "0": {
-            "receiving": [ p['output_format'] for p in paths ],
-            "xpub": "xpub",
-            "xpub2": "xpub",
-            "xpub3": "xpub"
+        "/x": {
+            "imported_p2sh": {p['address']: p['output_format'] for p in paths}
         }
     },
-    "master_private_keys": {
-    },
-    "master_public_keys": {
-        "x1/": "xpub",
-        "x2/": "xpub",
-        "x3/": "xpub"
-    },
-    "use_encryption": False,
-    "wallet_type": "2of3"
+    "wallet_type": "imported"
 }
+                # "34gRcJbgzZsCnZP1Swt5DxL2m8UTMCHayv": {
+                #     "m": 2,
+                #     "keypairs": [
+                #         ["","037edf8619d2597f472116e957610d858c0c839dbf989d28181cee62a382fabad6"],
+                #         ["0206808b8a54cfdd135cbcc5b49df7ab1649df4d052623d9c75956af28daae0bfc", ""],
+                #         ["","020b05abe5166e8e39ac59b44b5beeeaa6f1f1777d7c091bd76c1013e436ac058c"]
+                #     ]
+                # }
 
 with open(args.output_file, 'w') as f:
     dump(output, f)
