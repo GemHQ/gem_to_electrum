@@ -61,7 +61,9 @@ for path in paths:
     for n in sorted(path['public'].keys()):
         if n in path['private']:
             path['output_format']['keypairs'].append([
-                '',
+                FixedPyKey(public_pair=(path['public'][n].key.pubkey.point.x(),
+                                        path['public'][n].key.pubkey.point.y())
+                ).as_text(),
                 FixedPyKey(secret_exponent=path['private'][n].key.privkey.secret_multiplier).as_text()
             ])
         else:
@@ -75,19 +77,12 @@ for path in paths:
 output = {
     "accounts": {
         "/x": {
-            "imported_p2sh": {p['address']: p['output_format'] for p in paths}
+            "imported": {},
+            "imported_p2sh": { p['address']: p['output_format'] for p in paths }
         }
     },
     "wallet_type": "imported"
 }
-                # "34gRcJbgzZsCnZP1Swt5DxL2m8UTMCHayv": {
-                #     "m": 2,
-                #     "keypairs": [
-                #         ["","037edf8619d2597f472116e957610d858c0c839dbf989d28181cee62a382fabad6"],
-                #         ["0206808b8a54cfdd135cbcc5b49df7ab1649df4d052623d9c75956af28daae0bfc", ""],
-                #         ["","020b05abe5166e8e39ac59b44b5beeeaa6f1f1777d7c091bd76c1013e436ac058c"]
-                #     ]
-                # }
 
 with open(args.output_file, 'w') as f:
     dump(output, f)
